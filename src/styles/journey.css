@@ -1,0 +1,248 @@
+/* ==========================================================================
+   Inside the Grind — the film keeps almost nothing on screen.
+   ========================================================================== */
+
+.enter-grind {
+  margin: 18px 0 0;
+}
+.enter-grind .text-button {
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+.enter-grind .text-button span {
+  display: inline-block;
+  margin-left: 4px;
+  transition: transform 520ms var(--ease-reveal);
+}
+@media (hover: hover) {
+  .enter-grind .text-button:hover span {
+    transform: translateX(4px);
+  }
+}
+.enter-grind .text-button.is-quiet {
+  color: var(--ink-3);
+}
+
+/* The page steps aside. */
+.chrome.in-journey .header,
+.chrome.in-journey .rail,
+.chrome.in-journey .footer {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 600ms var(--ease-exit), visibility 0s linear 600ms;
+}
+html.in-journey .stage-canvas {
+  cursor: default;
+}
+
+.journey {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0s linear 700ms;
+}
+.journey.is-on {
+  visibility: visible;
+  transition: none;
+}
+.journey.is-on .journey-skip,
+.journey.is-hero .journey-actions.is-on {
+  pointer-events: auto;
+}
+
+/* Skip: a quiet word, top right, and a hairline that fills as the film runs. */
+.journey-skip {
+  position: absolute;
+  top: var(--gy);
+  right: var(--gx-r);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 500ms var(--ease-soft);
+}
+.journey.is-on .journey-skip {
+  opacity: 1;
+  transition: opacity 900ms var(--ease-soft) 1400ms;
+}
+.journey-skip .text-button {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 10px 0 6px 18px;
+}
+.journey-track {
+  position: relative;
+  width: 64px;
+  height: 1px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.journey-bar {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-2);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.journey.is-hero .journey-track {
+  opacity: 0;
+  transition: opacity 600ms var(--ease-soft);
+}
+
+/* The title on the hero frame. */
+.journey-title {
+  position: absolute;
+  left: var(--gx);
+  bottom: clamp(56px, 11vh, 120px);
+}
+.journey-name {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(56px, 7.4vw, 134px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+.journey-line {
+  margin: 20px 0 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.journey-title .line-inner {
+  transform: translate3d(0, 108%, 0);
+  opacity: 0;
+  transition: transform 500ms var(--ease-exit), opacity 400ms var(--ease-exit);
+}
+.journey.is-hero .journey-name .line-inner {
+  transform: none;
+  opacity: 1;
+  transition: transform 1500ms var(--ease-reveal) 500ms, opacity 900ms var(--ease-soft) 500ms;
+}
+.journey.is-hero .journey-line .line-inner {
+  transform: none;
+  opacity: 1;
+  transition: transform 1300ms var(--ease-reveal) 1150ms, opacity 900ms var(--ease-soft) 1150ms;
+}
+.journey-actions {
+  display: flex;
+  gap: 28px;
+  margin-top: 30px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 400ms var(--ease-exit), transform 400ms var(--ease-exit);
+}
+.journey-actions.is-on {
+  opacity: 1;
+  transform: none;
+  transition: opacity 900ms var(--ease-soft), transform 900ms var(--ease-reveal);
+}
+.journey-actions .text-button:first-child {
+  color: var(--ink);
+}
+
+/* Reduced motion: one line per still. */
+.journey-caption {
+  position: absolute;
+  left: var(--gx);
+  bottom: clamp(48px, 9vh, 96px);
+  margin: 0;
+  max-width: 26rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 21px;
+  color: var(--ink);
+  animation: journey-caption 900ms var(--ease-soft) both;
+}
+.journey-caption-n {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--brass);
+}
+@keyframes journey-caption {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Veil (skip, reduced-motion entry) and the still-to-still crossfade. */
+.journey-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 380ms var(--ease-soft);
+}
+.journey-veil.is-on {
+  opacity: 1;
+  transition-duration: 360ms;
+}
+.journey-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  opacity: 0;
+  pointer-events: none;
+}
+.journey-fade:not([src]) {
+  display: none;
+}
+.journey-fade.is-fading {
+  animation: journey-fade 1100ms var(--ease-soft) both;
+}
+@keyframes journey-fade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Phones: title low and wide, skip within thumb reach of the top edge. */
+@media (max-width: 720px), (max-aspect-ratio: 9/10) {
+  .journey-title {
+    left: 22px;
+    right: 22px;
+    bottom: max(44px, calc(env(safe-area-inset-bottom) + 32px));
+  }
+  .journey-name {
+    font-size: clamp(48px, 15vw, 72px);
+  }
+  .journey-line {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+  .journey-actions {
+    margin-top: 24px;
+  }
+  .journey-actions .text-button {
+    padding: 12px 0;
+  }
+  .journey-skip {
+    top: max(14px, env(safe-area-inset-top));
+    right: 16px;
+  }
+  .journey-caption {
+    left: 22px;
+    right: 22px;
+    bottom: max(40px, calc(env(safe-area-inset-bottom) + 28px));
+    font-size: 19px;
+  }
+}

@@ -1,0 +1,150 @@
+/* ==========================================================================
+   Modes — Inspect and Your Orme take the stage; the film waits underneath.
+   ========================================================================== */
+
+.mode {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0s linear 700ms;
+}
+.mode.is-on {
+  visibility: visible;
+  transition: none;
+}
+.mode.is-on :is(button, a) {
+  pointer-events: auto;
+}
+.mode > * {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition: opacity 420ms var(--ease-exit), transform 520ms var(--ease-exit);
+}
+.mode.is-on > * {
+  opacity: 1;
+  transform: none;
+  transition: opacity 900ms var(--ease-soft) 420ms, transform 1100ms var(--ease-reveal) 420ms;
+}
+.mode.is-on > :nth-child(3) {
+  transition-delay: 620ms;
+}
+.mode .line-inner {
+  transform: translate3d(0, 108%, 0);
+  opacity: 0;
+}
+.mode.is-on .line-inner {
+  transform: none;
+  opacity: 1;
+  transition: transform 1150ms var(--ease-reveal) 480ms, opacity 700ms var(--ease-soft) 480ms;
+}
+
+.mode-top {
+  position: absolute;
+  top: calc(var(--gy) + 52px);
+  left: var(--gx);
+  right: var(--gx-r);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.mode-hint {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* --- Inspect ------------------------------------------------------------ */
+
+.inspect-info {
+  position: absolute;
+  left: var(--gx);
+  top: 26vh;
+  width: min(26rem, 34vw);
+}
+/* Re-keyed on every selection: the new part's text arrives, the old one doesn't linger. */
+.mode.is-on .inspect-info > * {
+  animation: swap 760ms var(--ease-soft) both;
+}
+.mode.is-on .inspect-info > :nth-child(2) {
+  animation-delay: 60ms;
+}
+.mode.is-on .inspect-info > :nth-child(3) {
+  animation-delay: 140ms;
+}
+.mode.is-on .inspect-info > :nth-child(n + 4) {
+  animation-delay: 220ms;
+}
+.headline-inspect {
+  font-size: clamp(38px, 3.6vw, 60px);
+}
+.inspect-back {
+  margin-top: 26px;
+}
+
+.inspect-index {
+  position: absolute;
+  right: var(--gx-r);
+  bottom: calc(var(--gy) + 48px);
+  display: grid;
+  min-width: 13rem;
+}
+.inspect-item {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  align-items: baseline;
+  padding: 7px 0;
+  border-top: 1px solid var(--rule);
+  text-align: left;
+  font-size: 13px;
+  color: var(--ink-3);
+  transition: color 300ms var(--ease-soft), padding 500ms var(--ease-reveal);
+}
+.inspect-item:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+.inspect-num {
+  font-size: 11px;
+  font-feature-settings: 'tnum' 1;
+  color: var(--ink-3);
+  transition: color 300ms var(--ease-soft);
+}
+.inspect-item.is-hover,
+.inspect-item:hover {
+  color: var(--ink);
+  padding-left: 4px;
+}
+.inspect-item.is-selected {
+  color: var(--ink);
+}
+.inspect-item.is-selected .inspect-num {
+  color: var(--brass);
+}
+
+/* --- Your Orme ------------------------------------------------------------ */
+
+.hero-copy {
+  position: absolute;
+  right: calc(var(--gx-r) + 3vw);
+  top: 50%;
+  translate: 0 -46%;
+  width: 22rem;
+}
+.headline-hero {
+  font-size: clamp(52px, 5.4vw, 96px);
+  line-height: 0.92;
+}
+.hero-specs {
+  margin-top: 36px;
+}
+.hero-actions {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+.hero-actions .cta {
+  width: 100%;
+}

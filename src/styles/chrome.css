@@ -1,0 +1,283 @@
+/* ==========================================================================
+   Chrome — header, chapter rail, footer, loader. Kept to the edges.
+   ========================================================================== */
+
+.chrome {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.chrome > * {
+  opacity: 0;
+  transition: opacity 1400ms var(--ease-soft) 3200ms;
+}
+.chrome.is-ready > * {
+  opacity: 1;
+}
+.chrome :is(a, button) {
+  pointer-events: auto;
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--gy) var(--gx-r) 0 var(--gx);
+}
+.wordmark {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.36em;
+  margin-right: -0.36em;
+}
+.nav {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(20px, 3vw, 44px);
+  font-size: 12.5px;
+}
+.nav-muted {
+  color: var(--ink-3);
+  margin-left: 6px;
+}
+.nav-link {
+  position: relative;
+  padding: 6px 0;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0.28);
+  transform-origin: left;
+  transition: transform 520ms var(--ease-reveal);
+}
+@media (hover: hover) {
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Chapter rail: numerals at the right edge; a label slides out on hover. */
+.rail {
+  position: absolute;
+  right: var(--gx-r);
+  top: 50%;
+  translate: 0 -50%;
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+}
+/* The rail steps aside whenever the product fills the frame. */
+.chrome.over-product .rail,
+.chrome.in-inspect .rail,
+.chrome.in-hero .rail {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms var(--ease-soft);
+}
+.chrome.in-inspect .rail *,
+.chrome.in-hero .rail * {
+  pointer-events: none;
+}
+.rail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  font-size: 11px;
+  font-feature-settings: 'tnum' 1;
+  color: var(--ink-3);
+  transition: color 300ms var(--ease-soft);
+}
+.rail-num {
+  position: relative;
+  padding-right: 14px;
+}
+.rail-num::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 6px;
+  height: 1px;
+  background: currentColor;
+  transition: width 500ms var(--ease-reveal);
+}
+.rail-label {
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 300ms var(--ease-soft), transform 500ms var(--ease-reveal);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.rail-item.is-on {
+  color: var(--brass);
+}
+.rail-item.is-on .rail-num::after {
+  width: 10px;
+}
+@media (hover: hover) {
+  .rail-item:hover {
+    color: var(--ink);
+  }
+  .rail-item:hover .rail-label,
+  .rail:hover .rail-item.is-on .rail-label {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gx-r) var(--gy) var(--gx);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.where {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.where-num {
+  color: var(--brass);
+  font-feature-settings: 'tnum' 1;
+  animation: swap 700ms var(--ease-soft);
+}
+.where-label {
+  animation: swap 900ms var(--ease-soft);
+}
+.where-track {
+  position: relative;
+  width: 84px;
+  height: 1px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.where-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-2);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-soft);
+}
+.hint.is-on {
+  opacity: 1;
+}
+.hint-text {
+  animation: swap 800ms var(--ease-soft);
+}
+.hint-line {
+  position: relative;
+  width: 1px;
+  height: 34px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.hint-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: var(--ink-2);
+  animation: drip 2600ms var(--ease-press) infinite;
+}
+@keyframes drip {
+  0% {
+    transform: translateY(-100%);
+  }
+  55%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Loader                                                                      */
+/* -------------------------------------------------------------------------- */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  transition: opacity 1100ms var(--ease-soft) 250ms;
+}
+.loader.is-done {
+  opacity: 0;
+  pointer-events: none;
+}
+.loader-inner {
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+}
+.loader-mark {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  margin-right: -0.42em;
+  color: var(--ink);
+}
+.loader-track {
+  position: relative;
+  width: 96px;
+  height: 1px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.loader-bar {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-2);
+  transform-origin: left;
+  animation: load 2400ms var(--ease-soft) forwards;
+}
+.loader.is-done .loader-bar {
+  animation: none;
+  transform: scaleX(1);
+  transition: transform 400ms var(--ease-soft);
+}
+@keyframes load {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(0.82);
+  }
+}

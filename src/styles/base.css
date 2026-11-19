@@ -1,0 +1,286 @@
+/* ==========================================================================
+   Orme — tokens, base, typographic system
+   Serif (Newsreader, optical sizes) carries the voice; sans (Instrument Sans)
+   carries information. One accent — brass, from the burr's TiN coat — used
+   only for numbers and the one thing that is selected.
+   ========================================================================== */
+
+:root {
+  --bg: #0a0908;
+  --ink: #ece8e1;
+  --ink-2: #aaa49b;
+  --ink-3: #74706a;
+  --brass: #b9a074;
+  --rule: rgba(236, 232, 225, 0.16);
+  --rule-strong: rgba(236, 232, 225, 0.42);
+
+  --serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Instrument Sans Variable', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Asymmetric margins: the left edge is the reading edge, set further in. */
+  --gx: clamp(22px, 6.4vw, 112px);
+  --gx-r: clamp(22px, 3.6vw, 64px);
+  --gy: clamp(20px, 3.2vh, 36px);
+
+  /* Easing vocabulary */
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1); /* long expo settle: headlines */
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1); /* body, small UI */
+  --ease-exit: cubic-bezier(0.55, 0, 0.8, 0.25); /* leaves quickly, no ceremony */
+  --ease-press: cubic-bezier(0.7, 0, 0.2, 1); /* fills and wipes */
+  --ease-spring: cubic-bezier(0.34, 1.32, 0.5, 1); /* marks that land with a little give */
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+}
+html.is-locked {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+::selection {
+  background: rgba(185, 160, 116, 0.35);
+}
+:focus-visible {
+  outline: 1px solid var(--brass);
+  outline-offset: 4px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Stage                                                                       */
+/* -------------------------------------------------------------------------- */
+
+.canvas-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+.stage-canvas {
+  touch-action: pan-y;
+}
+html.is-modal .stage-canvas {
+  touch-action: none;
+}
+/* Cursor vocabulary: what the pointer will do here. */
+html.is-over .stage-canvas {
+  cursor: grab;
+}
+html.is-over-part .stage-canvas {
+  cursor: pointer;
+}
+html.is-over-dial .stage-canvas,
+html.is-turning-dial,
+html.is-turning-dial * {
+  cursor: ew-resize !important;
+}
+html.is-dragging,
+html.is-dragging *,
+html.is-cranking,
+html.is-cranking * {
+  cursor: grabbing !important;
+}
+
+.track {
+  position: relative;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Reduced-motion cut: the lens jumps under a short fade. */
+.cut {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+.cut.is-cutting {
+  animation: cut 520ms var(--ease-soft);
+}
+@keyframes cut {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Type                                                                        */
+/* -------------------------------------------------------------------------- */
+
+.index {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 26px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.index-num {
+  color: var(--brass);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: 0.08em;
+}
+.index-rule {
+  width: 28px;
+  height: 1px;
+  background: var(--rule-strong);
+  transform-origin: left;
+}
+
+.eyebrow {
+  margin: 0 0 22px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.eyebrow-sep {
+  color: var(--ink-3);
+  margin: 0 0.4em;
+}
+
+.headline {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-variation-settings: 'opsz' 72;
+  font-size: clamp(40px, 4.3vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+  /* Optical alignment: serif caps sit visually inside the measure. */
+  margin-left: -0.045em;
+}
+.headline-xl {
+  font-size: clamp(54px, 7vw, 124px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+.headline-caption {
+  font-size: clamp(30px, 2.6vw, 44px);
+  line-height: 1;
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  /* Room for ascenders, descenders and italic overhang inside the mask. */
+  padding: 0.08em 0.08em 0.1em 0;
+  margin: -0.08em 0 -0.1em;
+}
+.line-inner {
+  display: inline-block;
+  will-change: transform;
+}
+
+.body {
+  margin: 24px 0 0;
+  max-width: 25.5rem;
+  font-size: 15.5px;
+  line-height: 1.58;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.specs {
+  margin: 34px 0 0;
+  width: min(25.5rem, 100%);
+}
+.spec {
+  position: relative;
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  padding: 10px 0 9px;
+  font-size: 12.5px;
+}
+.spec::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--rule);
+  transform-origin: left;
+}
+.spec dt {
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+.spec dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.price {
+  margin: 22px 0 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 300;
+  font-variation-settings: 'opsz' 36;
+  font-feature-settings: 'lnum' 1;
+}
+.price-note {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.only-portrait {
+  display: none;
+}
+@media (pointer: coarse) {
+  .only-fine {
+    display: none;
+  }
+}

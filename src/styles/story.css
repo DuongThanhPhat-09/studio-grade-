@@ -1,0 +1,353 @@
+/* ==========================================================================
+   Story beats: composition and reveal choreography
+   ========================================================================== */
+
+.story {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.beat {
+  position: absolute;
+  inset: 0;
+}
+.beat.is-in {
+  z-index: 1;
+}
+/* Only the beat on screen is operable. */
+.beat.is-in :is(button, input, a, label) {
+  pointer-events: auto;
+}
+
+.block {
+  position: absolute;
+  left: var(--gx);
+  max-width: 34rem;
+}
+
+/* --- Composition per beat: density changes from beat to beat ------------ */
+
+.beat-intro .block {
+  bottom: clamp(64px, 13vh, 150px);
+}
+.beat-intro .body {
+  max-width: 19rem;
+  margin-top: 30px;
+}
+.beat-intro .line:nth-child(2) .line-inner,
+.beat-xray .line:nth-child(2) .line-inner,
+.beat-build .line:nth-child(2) .line-inner {
+  font-style: italic;
+}
+
+/* Macro plates: a caption, not a section. */
+.beat-macro .block {
+  bottom: clamp(64px, 12vh, 132px);
+  max-width: 22rem;
+}
+/* Where the arm crosses the lower frame, the caption hangs from the top instead. */
+.beat-mCrank .block,
+.beat-mWalnut .block {
+  bottom: auto;
+  top: 22vh;
+}
+.caption-n {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--brass);
+}
+.caption-n span:last-child {
+  color: var(--ink-3);
+}
+.caption-rule {
+  width: 22px;
+  height: 1px;
+  background: var(--rule-strong);
+}
+.body-caption {
+  margin-top: 14px;
+  font-size: 14px;
+  max-width: 19rem;
+}
+
+.beat-form .block {
+  top: 25vh;
+}
+.beat-engineering .block {
+  top: 19vh;
+  max-width: 30rem;
+}
+.beat-engineering .headline {
+  font-size: clamp(38px, 3.7vw, 64px);
+}
+.beat-xray .block {
+  top: 20vh;
+}
+.beat-grind .block {
+  top: 15vh;
+}
+.beat-build .block {
+  top: 17vh;
+}
+.beat-lab .block {
+  top: 13vh;
+  max-width: 44rem;
+}
+.beat-lab .headline {
+  font-size: clamp(38px, 3.6vw, 62px);
+}
+
+.beat-final .block-name {
+  bottom: clamp(56px, 11vh, 120px);
+}
+.headline-name {
+  font-size: clamp(64px, 9.5vw, 172px);
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+}
+.beat-final .line:nth-child(2) .line-inner {
+  font-style: italic;
+  color: var(--ink-2);
+}
+.final-line {
+  margin: 22px 0 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--ink-2);
+}
+.beat-final .block-buy {
+  left: auto;
+  right: var(--gx-r);
+  bottom: clamp(60px, 11.5vh, 124px);
+  width: 19rem;
+}
+.final-config {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* --- Readouts ------------------------------------------------------------ */
+
+.readout {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  column-gap: 48px;
+  row-gap: 16px;
+  width: min(27rem, 100%);
+}
+.readout-cell {
+  display: grid;
+  gap: 6px;
+}
+.readout-k {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.readout-v {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-variation-settings: 'opsz' 48;
+  font-size: 38px;
+  line-height: 1;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.readout-of {
+  margin-left: 7px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+.readout-track {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 1px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.readout-bar {
+  position: absolute;
+  inset: 0;
+  background: var(--brass);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.readout-hint {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+/* --- Reveal choreography --------------------------------------------------
+   Beats are "future" (below), "in", or "past" (above). Entering is slow and
+   staggered; leaving is quick and unified. Elements keep their own timing.   */
+
+.beat .line-inner {
+  transition: transform 520ms var(--ease-exit), opacity 360ms var(--ease-exit);
+  opacity: 0;
+}
+.beat.is-future .line-inner {
+  transform: translate3d(0, 108%, 0);
+}
+.beat.is-past .line-inner {
+  transform: translate3d(0, -42%, 0);
+}
+.beat.is-in .line-inner {
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 1150ms var(--ease-reveal) calc(var(--d, 0ms) + 140ms + var(--i) * 95ms),
+    opacity 700ms var(--ease-soft) calc(var(--d, 0ms) + 140ms + var(--i) * 95ms);
+}
+
+.beat :is(.index, .eyebrow, .caption-n, .body, .price, .actions, .cta, .readout, .choices, .config, .dose, .recipe, .sim-run, .final-line, .final-config, .enter-grind) {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition: opacity 320ms var(--ease-exit), transform 420ms var(--ease-exit);
+}
+.beat.is-past :is(.body, .index, .eyebrow, .readout, .choices, .config, .recipe) {
+  transform: translate3d(0, -8px, 0);
+}
+.beat.is-in :is(.index, .eyebrow, .caption-n) {
+  opacity: 1;
+  transform: none;
+  transition: opacity 700ms var(--ease-soft) 60ms, transform 900ms var(--ease-reveal) 60ms;
+}
+.beat.is-in .body {
+  opacity: 1;
+  transform: none;
+  transition: opacity 900ms var(--ease-soft) 440ms, transform 1100ms var(--ease-reveal) 440ms;
+}
+.beat-intro.is-in .body {
+  transition-delay: 900ms;
+}
+.beat-intro.is-in .eyebrow {
+  transition-delay: 160ms;
+}
+.beat.is-in :is(.choices, .config, .dose) {
+  opacity: 1;
+  transform: none;
+  transition: opacity 800ms var(--ease-soft) 520ms, transform 1000ms var(--ease-reveal) 520ms;
+}
+.beat.is-in :is(.readout, .recipe, .sim-run, .final-line, .final-config) {
+  opacity: 1;
+  transform: none;
+  transition: opacity 900ms var(--ease-soft) 640ms, transform 1100ms var(--ease-reveal) 640ms;
+}
+.beat.is-in :is(.price, .actions, .cta, .enter-grind) {
+  opacity: 1;
+  transform: none;
+  transition: opacity 900ms var(--ease-soft) 760ms, transform 1100ms var(--ease-reveal) 760ms;
+}
+.beat .index-rule,
+.beat .caption-rule {
+  transform: scaleX(0);
+  transition: transform 300ms var(--ease-exit);
+}
+.beat.is-in :is(.index-rule, .caption-rule) {
+  transform: scaleX(1);
+  transition: transform 1000ms var(--ease-reveal) 200ms;
+}
+.beat .spec {
+  opacity: 0;
+  transition: opacity 280ms var(--ease-exit);
+}
+.beat .spec::before {
+  transform: scaleX(0);
+  transition: transform 300ms var(--ease-exit);
+}
+.beat.is-in .spec,
+.mode.is-on .spec {
+  opacity: 1;
+  transition: opacity 800ms var(--ease-soft) calc(700ms + var(--i) * 90ms);
+}
+.beat.is-in .spec::before,
+.mode.is-on .spec::before {
+  transform: scaleX(1);
+  transition: transform 1200ms var(--ease-reveal) calc(620ms + var(--i) * 90ms);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Callouts                                                                    */
+/* -------------------------------------------------------------------------- */
+
+.callouts {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.callout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.callout-dot {
+  position: absolute;
+  left: -2.5px;
+  top: -2.5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 3px rgba(10, 9, 8, 0.5);
+}
+.callout-line {
+  position: absolute;
+  left: 7px;
+  top: 0;
+  width: calc(var(--len) - 7px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(236, 232, 225, 0.55), rgba(236, 232, 225, 0.22));
+  transform-origin: left;
+  transform: scaleX(var(--draw, 0));
+}
+.callout-label {
+  position: absolute;
+  left: calc(var(--len) + 14px);
+  top: -9px;
+  display: grid;
+  grid-template-columns: 26px auto;
+  row-gap: 3px;
+  white-space: nowrap;
+}
+.callout-label > :not(.callout-index):first-child,
+.callout-label > .callout-name:nth-child(1) ~ .callout-detail {
+  grid-column: 1 / -1;
+}
+.callout-index {
+  grid-row: 1 / 3;
+  font-size: 11px;
+  color: var(--brass);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: 0.06em;
+  padding-top: 2px;
+}
+.callout-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.callout-detail {
+  font-size: 12px;
+  color: #8f8980;
+  font-feature-settings: 'tnum' 1;
+}
